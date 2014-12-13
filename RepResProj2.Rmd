@@ -1,8 +1,9 @@
 ---
-title: "Reproducible Research: Peer Assessment 2"
-output: 
+title: 'Reproducible Research: Peer Assessment 2'
+output:
   html_document:
-    keep_md: true
+    keep_md: yes
+  pdf_document: default
 ---
 
 The basic goal of this assignment is to explore the NOAA Storm Database and answer some basic questions about severe weather events:
@@ -11,7 +12,8 @@ The basic goal of this assignment is to explore the NOAA Storm Database and answ
 2. Across the United States, which types of events have the greatest economic consequences?
 
 ## Data Processing
-We begin by loading libraries and setting a few global parameters:
+I begin the analysis by loading libraries and setting a few global parameters:
+
 ```{r chunkOpts, cache=TRUE}
   library(knitr)
   opts_chunk$set(echo=TRUE)       ## set global parameter for echo

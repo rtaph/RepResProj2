@@ -6,12 +6,13 @@ The basic goal of this assignment is to explore the NOAA Storm Database and answ
 2. Across the United States, which types of events have the greatest economic consequences?
 
 ## Data Processing
-We begin by loading libraries and setting a few global parameters:
+I begin the analysis by loading libraries and setting a few global parameters:
+
 
 ```r
   library(knitr)
   opts_chunk$set(echo=TRUE)       ## set global parameter for echo
-  setwd("~/datasciencecoursera/RepResProj2/")
+  setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
 
 We first download and unzip the data (if necessary):
@@ -105,14 +106,14 @@ records = table(format(raw$BGN_DATE,"%Y"))
 plot(records, type = "l", main = "# of Weather Observations Recorded, 1950-2008")
 ```
 
-![](./RepResProj2_files/figure-html/chunkExpl6-1.png) 
+![](RepResProj2_files/figure-html/chunkExpl6-1.png) 
 
 ```r
 types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
 plot(types,type="l")
 ```
 
-![](./RepResProj2_files/figure-html/chunkExpl6-2.png) 
+![](RepResProj2_files/figure-html/chunkExpl6-2.png) 
 
 
 ```r
@@ -153,7 +154,7 @@ head(df2)
 barplot(head(df2$INJURIES))
 ```
 
-![](./RepResProj2_files/figure-html/chunkExpl4-1.png) 
+![](RepResProj2_files/figure-html/chunkExpl4-1.png) 
 
 > Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 
@@ -170,8 +171,8 @@ sessionInfo()
 ```
 
 ```
-## R version 3.1.1 (2014-07-10)
-## Platform: x86_64-apple-darwin10.8.0 (64-bit)
+## R version 3.1.2 (2014-10-31)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
 ## 
 ## locale:
 ## [1] en_CA.UTF-8/en_CA.UTF-8/en_CA.UTF-8/C/en_CA.UTF-8/en_CA.UTF-8
@@ -179,12 +180,9 @@ sessionInfo()
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
-## other attached packages:
-## [1] knitr_1.7
-## 
 ## loaded via a namespace (and not attached):
-## [1] codetools_0.2-9 digest_0.6.4    evaluate_0.5.5  formatR_1.0    
-## [5] htmltools_0.2.6 rmarkdown_0.3.3 stringr_0.6.2   tools_3.1.1    
+## [1] digest_0.6.6     evaluate_0.5.5   formatR_1.0      htmltools_0.2.6 
+## [5] knitr_1.8        rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
 ## [9] yaml_2.1.13
 ```
 
