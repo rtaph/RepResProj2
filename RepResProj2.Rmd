@@ -15,7 +15,7 @@ We begin by loading libraries and setting a few global parameters:
 ```{r chunkOpts, cache=TRUE}
   library(knitr)
   opts_chunk$set(echo=TRUE)       ## set global parameter for echo
-  setwd("~/datasciencecoursera/RepResProj2/")
+  setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
 
 We first download and unzip the data (if necessary):
