@@ -1,4 +1,11 @@
 .Rproj.user
 .Rhistory
 .RData
-RepResProj2.Rproj
+
+## RStudio files
+*.Rproj
+*.Rdata
+
+## cached files (knitr)
+/*_cache
+/*_files
