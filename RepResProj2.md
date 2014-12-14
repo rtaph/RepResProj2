@@ -96,6 +96,7 @@ Looking at the summary of data below, we identify the variables of intererst for
   # reformat data type of key variables
   raw$EVTYPE = as.factor(raw$EVTYPE)
   raw$BGN_DATE = as.POSIXlt(strptime(raw$BGN_DATE,format="%m/%d/%Y %H:%M:%S"))
+  raw$DMG = ""
   raw$DMG = mapvalues(raw$PROPDMGEXP, c("B","M","m","K","H","h","0"),
                                       c(1e9,1e6,1e6,1e3,1e2,1e2,1))
   raw$DMG = as.numeric(raw$DMG) * raw$PROPDMG
@@ -103,6 +104,10 @@ Looking at the summary of data below, we identify the variables of intererst for
 
 ```
 ## Warning: NAs introduced by coercion
+```
+
+```r
+  raw$DMG = as.numeric(raw$DMG)
 ```
 
 A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret(even after reading the data help files). Luckily, they are few enough that they can likely be ignored without making a big difference on the exploratory analysis. 
@@ -128,6 +133,7 @@ The number of unique weather events jumps sharply in 1995 (387 records). Accordi
 ```r
   df = raw[raw$BGN_DATE >= 1995,]
 ```
+This captures 96% of the raw data.
 
 ### Results
 On the basis of fatalities, it appears that XXX is the most harmful to population health. 
@@ -141,9 +147,9 @@ Discuss results
 
 
 ```r
-df1 = aggregate(FATALITIES ~ EVTYPE, data = df, sum)
-df1 = df1[order(df1$FATALITIES, decreasing = T),]
-head(df1)
+  df1 = aggregate(FATALITIES ~ EVTYPE, data = df, sum)
+  df1 = df1[order(df1$FATALITIES, decreasing = T),]
+  head(df1)
 ```
 
 ```
@@ -158,9 +164,9 @@ head(df1)
 
 
 ```r
-df2 = aggregate(INJURIES ~ EVTYPE, data = df, sum)
-df2 = df2[order(df2$INJURIES, decreasing = T),]
-head(df2)
+  df2 = aggregate(INJURIES ~ EVTYPE, data = df, sum)
+  df2 = df2[order(df2$INJURIES, decreasing = T),]
+  head(df2)
 ```
 
 ```
@@ -175,7 +181,7 @@ head(df2)
 
 
 ```r
-barplot(head(df2$INJURIES))
+  barplot(head(df2$INJURIES))
 ```
 
 ![](RepResProj2_files/figure-html/chunkExpl4-1.png) 
@@ -187,11 +193,20 @@ Across the United States, which types of events have the greatest economic conse
 Property damage estimates 
 
 
-## Session Info
+```r
+  df3 = aggregate(DMG ~ EVTYPE, data = df, sum)
+  df3 = df3[order(df3$DMG, decreasing = T),]
+  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2008")
+  axis(1, at = 1:6, labels = head(df3$EVTYPE))
+```
+
+![](RepResProj2_files/figure-html/chunkExpl7-1.png) 
+
+### Session Info
 
 
 ```r
-sessionInfo()
+  sessionInfo()
 ```
 
 ```
@@ -204,9 +219,12 @@ sessionInfo()
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
+## other attached packages:
+## [1] plyr_1.8.1 knitr_1.8 
+## 
 ## loaded via a namespace (and not attached):
-## [1] digest_0.6.6     evaluate_0.5.5   formatR_1.0      htmltools_0.2.6 
-## [5] knitr_1.8        rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
-## [9] yaml_2.1.13
+##  [1] codetools_0.2-9  digest_0.6.6     evaluate_0.5.5   formatR_1.0     
+##  [5] htmltools_0.2.6  Rcpp_0.11.3      rmarkdown_0.3.10 stringr_0.6.2   
+##  [9] tools_3.1.2      yaml_2.1.13
 ```
 
