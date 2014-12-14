@@ -1,6 +1,7 @@
 # Reproducible Research: Peer Assessment 2
 
-The basic goal of this assignment is to explore the NOAA Storm Database and answer some basic questions about severe weather events:
+## Synopsis / Abstract
+The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the NOAA Storm Database. The paper attempts to answer two basic questions about severe weather events:
 
 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 2. Across the United States, which types of events have the greatest economic consequences?
@@ -91,8 +92,7 @@ str(raw)
   raw$PROPDMGEXP = as.factor(raw$PROPDMGEXP)
 ```
 
-## Synopsis
-The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States.
+
 
 ## Results
 

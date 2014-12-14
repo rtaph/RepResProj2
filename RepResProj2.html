@@ -55,11 +55,14 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<p>The basic goal of this assignment is to explore the NOAA Storm Database and answer some basic questions about severe weather events:</p>
+<div id="synopsis-abstract" class="section level2">
+<h2>Synopsis / Abstract</h2>
+<p>The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the NOAA Storm Database. The paper attempts to answer two basic questions about severe weather events:</p>
 <ol style="list-style-type: decimal">
 <li>Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?</li>
 <li>Across the United States, which types of events have the greatest economic consequences?</li>
 </ol>
+</div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
 <p>I begin the analysis by loading libraries and setting a few global parameters:</p>
@@ -122,10 +125,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
   raw$EVTYPE = as.factor(raw$EVTYPE)
   raw$BGN_DATE = as.POSIXlt(strptime(raw$BGN_DATE,format=&quot;%m/%d/%Y %H:%M:%S&quot;))
   raw$PROPDMGEXP = as.factor(raw$PROPDMGEXP)</code></pre>
-</div>
-<div id="synopsis" class="section level2">
-<h2>Synopsis</h2>
-<p>The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
