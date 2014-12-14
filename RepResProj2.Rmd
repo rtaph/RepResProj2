@@ -5,14 +5,19 @@ output:
     keep_md: yes
   pdf_document: default
 ---
+## Most Harmful Weather Events
 
-## Synopsis / Abstract
 The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the NOAA Storm Database. The paper attempts to answer two basic questions about severe weather events:
 
 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 2. Across the United States, which types of events have the greatest economic consequences?
 
-## Data Processing
+### Synopsis
+
+The analysis finds that...
+
+
+### Data Processing
 I begin the analysis by loading libraries and setting a few global parameters:
 
 ```{r chunkOpts, cache=TRUE}
@@ -51,20 +56,25 @@ str(raw)
   raw$PROPDMGEXP = as.factor(raw$PROPDMGEXP)
 ```
 
+By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
+```{r chunkExpl6, cache=TRUE}
+records = table(format(raw$BGN_DATE,"%Y"))
+plot(records, type = "l", 
+     main = "# of Unique Weather Observations Recorded, 1950-2008")
+types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
+plot(types,type="l")
+```
 
-## Results
+### Results
+On the basis of fatalities, it appears that XXX is the most harmful to population health. 
 
+On the basis of damage
 
 
 Discuss results
 
-```{r chunkExpl6, cache=TRUE}
-records = table(format(raw$BGN_DATE,"%Y"))
-plot(records, type = "l", main = "# of Weather Observations Recorded, 1950-2008")
-types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
-plot(types,type="l")
-```
+
 
 ```{r chunkExpl2, cache=TRUE}
 df1 = aggregate(FATALITIES ~ EVTYPE, data = raw, sum)
