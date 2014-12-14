@@ -132,7 +132,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
                                       c(1e9,1e6,1e6,1e3,1e2,1e2,1))
   raw$DMG = as.numeric(raw$DMG) * raw$PROPDMG</code></pre>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
-<p>A new variable <code>DMG</code> is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these are ammbigous to interpret. Luckily, they are also few enough in this exploratory analysis to be ignored.</p>
+<p>A new variable <code>DMG</code> is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret(even after reading the data help files). Luckily, they are few enough that they can likely be ignored without making a big difference on the exploratory analysis.</p>
 <p>By plotting the number of <em>unique</em> types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.</p>
 <pre class="r"><code>  t = table(format(raw$BGN_DATE,&quot;%Y&quot;))
   u  = as.numeric(tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x))))
