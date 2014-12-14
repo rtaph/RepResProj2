@@ -62,14 +62,16 @@ Looking at the summary of data below, we identify the variables of intererst for
 By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
 ```{r chunkExpl6, cache=TRUE}
-par(mfrow = c(1, 2))
-total.records = table(format(raw$BGN_DATE,"%Y"))
-plot(total.records, type = "l", main = "Total Number of Weather Observations Recorded, 1950-2008")
-unique.types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
-plot(unique.types,type="l", main = "Number of Unique Weather Observations Recorded, 1950-2008")
+  t = table(format(raw$BGN_DATE,"%Y"))
+  u  = as.numeric(tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x))))
+
+  plot(t, type = "l", main = "Number of Records", ylab = "", col = "blue")
+  par(new=T); plot(u, type='l', col = "red", lwd = 2, axes=F, xlab=NA, ylab=NA)
+  axis(4, col = "red", lwd = 2)
+  legend("topleft", c("Total","Unique"), lwd=c(2.5,2.5), col=c("blue","red"))
 ```
 
-The number of unique weather events maxes out in `r which.max(unique.types)`
+The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (`r max(u)` records).
 
 ### Results
 On the basis of fatalities, it appears that XXX is the most harmful to population health. 
