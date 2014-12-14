@@ -1,7 +1,7 @@
 # Reproducible Research: Peer Assessment 2
 ## Most Harmful Weather Events
 
-The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the NOAA Storm Database. The paper attempts to answer two basic questions about severe weather events:
+The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the [NOAA Storm Database](http://www.ncdc.noaa.gov/stormevents/). The paper attempts to answer two basic questions about severe weather events:
 
 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 2. Across the United States, which types of events have the greatest economic consequences?
@@ -17,7 +17,7 @@ I begin the analysis by loading libraries and setting a few global parameters:
 
 ```r
   ## load needed libraries, set global options, and working directory
-  library(knitr)
+  library(knitr); library(plyr)
   opts_chunk$set(echo=TRUE)       
   setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
@@ -96,8 +96,16 @@ Looking at the summary of data below, we identify the variables of intererst for
   # reformat data type of key variables
   raw$EVTYPE = as.factor(raw$EVTYPE)
   raw$BGN_DATE = as.POSIXlt(strptime(raw$BGN_DATE,format="%m/%d/%Y %H:%M:%S"))
-  raw$PROPDMGEXP = as.factor(raw$PROPDMGEXP)
+  raw$DMG = mapvalues(raw$PROPDMGEXP, c("B","M","m","K","H","h","0"),
+                                      c(1e9,1e6,1e6,1e3,1e2,1e2,1))
+  raw$DMG = as.numeric(raw$DMG) * raw$PROPDMG
 ```
+
+```
+## Warning: NAs introduced by coercion
+```
+
+A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these are ammbigous to interpret. Luckily, they are also few enough in this exploratory analysis to be ignored. 
 
 By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
@@ -196,14 +204,9 @@ sessionInfo()
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
-## other attached packages:
-## [1] ggplot2_1.0.0  reshape2_1.4.1 knitr_1.8     
-## 
 ## loaded via a namespace (and not attached):
-##  [1] codetools_0.2-9  colorspace_1.2-4 digest_0.6.6     evaluate_0.5.5  
-##  [5] formatR_1.0      grid_3.1.2       gtable_0.1.2     htmltools_0.2.6 
-##  [9] MASS_7.3-35      munsell_0.4.2    plyr_1.8.1       proto_0.3-10    
-## [13] Rcpp_0.11.3      rmarkdown_0.3.10 scales_0.2.4     stringr_0.6.2   
-## [17] tools_3.1.2      yaml_2.1.13
+## [1] digest_0.6.6     evaluate_0.5.5   formatR_1.0      htmltools_0.2.6 
+## [5] knitr_1.8        rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
+## [9] yaml_2.1.13
 ```
 

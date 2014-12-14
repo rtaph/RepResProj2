@@ -7,7 +7,7 @@ output:
 ---
 ## Most Harmful Weather Events
 
-The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the NOAA Storm Database. The paper attempts to answer two basic questions about severe weather events:
+The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the [NOAA Storm Database](http://www.ncdc.noaa.gov/stormevents/). The paper attempts to answer two basic questions about severe weather events:
 
 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 2. Across the United States, which types of events have the greatest economic consequences?
@@ -22,7 +22,7 @@ I begin the analysis by loading libraries and setting a few global parameters:
 
 ```{r chunkOpts, cache=TRUE}
   ## load needed libraries, set global options, and working directory
-  library(knitr)
+  library(knitr); library(plyr)
   opts_chunk$set(echo=TRUE)       
   setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
@@ -56,8 +56,12 @@ Looking at the summary of data below, we identify the variables of intererst for
   # reformat data type of key variables
   raw$EVTYPE = as.factor(raw$EVTYPE)
   raw$BGN_DATE = as.POSIXlt(strptime(raw$BGN_DATE,format="%m/%d/%Y %H:%M:%S"))
-  raw$PROPDMGEXP = as.factor(raw$PROPDMGEXP)
+  raw$DMG = mapvalues(raw$PROPDMGEXP, c("B","M","m","K","H","h","0"),
+                                      c(1e9,1e6,1e6,1e3,1e2,1e2,1))
+  raw$DMG = as.numeric(raw$DMG) * raw$PROPDMG
 ```
+
+A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these are ammbigous to interpret. Luckily, they are also few enough in this exploratory analysis to be ignored. 
 
 By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
