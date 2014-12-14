@@ -114,7 +114,12 @@ By plotting the number of *unique* types of weather events per year below, we ca
 
 ![](RepResProj2_files/figure-html/chunkExpl6-1.png) 
 
-The number of unique weather events jumps sharply in 1995 (387 records).
+The number of unique weather events jumps sharply in 1995 (387 records). Accordingly, I will work only with the subset of data from this date forward, as it is more likely more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
+
+
+```r
+  df = raw[raw$BGN_DATE >= 1995,]
+```
 
 ### Results
 On the basis of fatalities, it appears that XXX is the most harmful to population health. 
@@ -128,35 +133,35 @@ Discuss results
 
 
 ```r
-df1 = aggregate(FATALITIES ~ EVTYPE, data = raw, sum)
+df1 = aggregate(FATALITIES ~ EVTYPE, data = df, sum)
 df1 = df1[order(df1$FATALITIES, decreasing = T),]
 head(df1)
 ```
 
 ```
 ##             EVTYPE FATALITIES
-## 834        TORNADO       5633
+## 833        TORNADO       3272
 ## 130 EXCESSIVE HEAT       1903
-## 153    FLASH FLOOD        978
+## 153    FLASH FLOOD        974
 ## 275           HEAT        937
-## 464      LIGHTNING        816
-## 856      TSTM WIND        504
+## 463      LIGHTNING        812
+## 855      TSTM WIND        504
 ```
 
 
 ```r
-df2 = aggregate(INJURIES ~ EVTYPE, data = raw, sum)
+df2 = aggregate(INJURIES ~ EVTYPE, data = df, sum)
 df2 = df2[order(df2$INJURIES, decreasing = T),]
 head(df2)
 ```
 
 ```
 ##             EVTYPE INJURIES
-## 834        TORNADO    91346
-## 856      TSTM WIND     6957
+## 833        TORNADO    59580
+## 855      TSTM WIND     6947
 ## 170          FLOOD     6789
 ## 130 EXCESSIVE HEAT     6525
-## 464      LIGHTNING     5230
+## 463      LIGHTNING     5226
 ## 275           HEAT     2100
 ```
 

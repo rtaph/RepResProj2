@@ -71,7 +71,11 @@ By plotting the number of *unique* types of weather events per year below, we ca
   legend("topleft", c("Total","Unique"), lwd=c(2.5,2.5), col=c("blue","red"))
 ```
 
-The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (`r max(u)` records).
+The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (`r max(u)` records). Accordingly, I will work only with the subset of data from this date forward, as it is more likely more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
+
+```{r chunkSubset, cache=TRUE}
+  df = raw[raw$BGN_DATE >= 1995,]
+```
 
 ### Results
 On the basis of fatalities, it appears that XXX is the most harmful to population health. 
@@ -84,13 +88,13 @@ Discuss results
 
 
 ```{r chunkExpl2, cache=TRUE}
-df1 = aggregate(FATALITIES ~ EVTYPE, data = raw, sum)
+df1 = aggregate(FATALITIES ~ EVTYPE, data = df, sum)
 df1 = df1[order(df1$FATALITIES, decreasing = T),]
 head(df1)
 ```
 
 ```{r chunkExpl3, cache=TRUE}
-df2 = aggregate(INJURIES ~ EVTYPE, data = raw, sum)
+df2 = aggregate(INJURIES ~ EVTYPE, data = df, sum)
 df2 = df2[order(df2$INJURIES, decreasing = T),]
 head(df2)
 ```
