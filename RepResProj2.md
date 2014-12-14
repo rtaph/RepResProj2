@@ -16,8 +16,9 @@ I begin the analysis by loading libraries and setting a few global parameters:
 
 
 ```r
+  ## load needed libraries, set global options, and working directory
   library(knitr)
-  opts_chunk$set(echo=TRUE)       ## set global parameter for echo
+  opts_chunk$set(echo=TRUE)       
   setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
 
@@ -25,7 +26,6 @@ We first download and unzip the data (if necessary):
 
 ```r
   #Download file if it does not exist
-
   if (!file.exists("repdata-data-StormData.csv.bz2")) {
       fileURL <- "http://bit.ly/1uNSAQY"
       zipfile = "repdata-data-StormData.csv.bz2"
@@ -38,9 +38,10 @@ We then read the data into R
 ```r
   # Load the data and assign it to a variable
   file   = "repdata-data-StormData.csv.bz2"
-  raw    =  read.csv(file, stringsAsFactors = FALSE)
+  raw    =  read.csv(file, stringsAsFactors = FALSE) # FALSE to optimize read speed
 ```
 
+We summarize information about the data using the `str` command:
 
 
 ```r
@@ -88,6 +89,8 @@ str(raw)
 ##  $ REFNUM    : num  1 2 3 4 5 6 7 8 9 10 ...
 ```
 
+Looking at the summary of data below, we identify the variables of intererst for the analysis. This will be `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate). These variables either need to be converted or manipulated into more workable formats:
+
 
 ```r
   # reformat data type of key variables
@@ -100,19 +103,16 @@ By plotting the number of *unique* types of weather events per year below, we ca
 
 
 ```r
-records = table(format(raw$BGN_DATE,"%Y"))
-plot(records, type = "l", 
-     main = "# of Unique Weather Observations Recorded, 1950-2008")
+par(mfrow = c(1, 2))
+total.records = table(format(raw$BGN_DATE,"%Y"))
+plot(total.records, type = "l", main = "Total Number of Weather Observations Recorded, 1950-2008")
+unique.types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
+plot(unique.types,type="l", main = "Number of Unique Weather Observations Recorded, 1950-2008")
 ```
 
 ![](RepResProj2_files/figure-html/chunkExpl6-1.png) 
 
-```r
-types = tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x)))
-plot(types,type="l")
-```
-
-![](RepResProj2_files/figure-html/chunkExpl6-2.png) 
+The number of unique weather events maxes out in 46
 
 ### Results
 On the basis of fatalities, it appears that XXX is the most harmful to population health. 
@@ -189,12 +189,9 @@ sessionInfo()
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
-## other attached packages:
-## [1] knitr_1.8
-## 
 ## loaded via a namespace (and not attached):
-## [1] codetools_0.2-9  digest_0.6.6     evaluate_0.5.5   formatR_1.0     
-## [5] htmltools_0.2.6  rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
+## [1] digest_0.6.6     evaluate_0.5.5   formatR_1.0      htmltools_0.2.6 
+## [5] knitr_1.8        rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
 ## [9] yaml_2.1.13
 ```
 
