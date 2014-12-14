@@ -5,6 +5,7 @@ output:
     keep_md: yes
   pdf_document: default
 ---
+******************************
 ## Most Harmful Weather Events
 
 The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the [NOAA Storm Database](http://www.ncdc.noaa.gov/stormevents/). The paper attempts to answer two basic questions about severe weather events:

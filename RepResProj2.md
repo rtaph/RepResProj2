@@ -1,4 +1,5 @@
 # Reproducible Research: Peer Assessment 2
+***********
 ## Most Harmful Weather Events
 
 The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the [NOAA Storm Database](http://www.ncdc.noaa.gov/stormevents/). The paper attempts to answer two basic questions about severe weather events:
@@ -219,12 +220,9 @@ Property damage estimates
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
-## other attached packages:
-## [1] plyr_1.8.1 knitr_1.8 
-## 
 ## loaded via a namespace (and not attached):
-##  [1] codetools_0.2-9  digest_0.6.6     evaluate_0.5.5   formatR_1.0     
-##  [5] htmltools_0.2.6  Rcpp_0.11.3      rmarkdown_0.3.10 stringr_0.6.2   
-##  [9] tools_3.1.2      yaml_2.1.13
+## [1] digest_0.6.6     evaluate_0.5.5   formatR_1.0      htmltools_0.2.6 
+## [5] knitr_1.8        rmarkdown_0.3.10 stringr_0.6.2    tools_3.1.2     
+## [9] yaml_2.1.13
 ```
 
