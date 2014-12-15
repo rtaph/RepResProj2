@@ -28,7 +28,7 @@ I begin the analysis by loading libraries and setting a few global parameters:
   setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
 
-We first download and unzip the data (if necessary):
+I then check that the data file exists, download it (if needed), and unzip it:
 ```{r chuckDownload, cache=TRUE}
   #Download file if it does not exist
   if (!file.exists("repdata-data-StormData.csv.bz2")) {
@@ -38,20 +38,23 @@ We first download and unzip the data (if necessary):
   }
 ```
 
-We then read the data into R
+The data is then read into R. As it is a large file, data is first read as character strings to improve performance and speed: 
+
 ```{r chunkLoadData, cache=TRUE}
   # Load the data and assign it to a variable
   file   = "repdata-data-StormData.csv.bz2"
   raw    =  read.csv(file, stringsAsFactors = FALSE) # FALSE to optimize read speed
 ```
 
-We summarize information about the data using the `str` command:
+Information about the data can be summarized using the `str` command:
 
 ```{r chunkExpl1, cache=TRUE}
 str(raw)
 ```
 
-Looking at the summary of data below, we identify the variables of intererst for the analysis. This will be `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate). These variables either need to be converted or manipulated into more workable formats:
+Looking at the summary above, variables can be identified that match to the question of interest. In this analysis, I will use `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate).
+
+Many of these variables need to be converted or manipulated into more workable formats:
 
 ```{r chunkReformat, cache=TRUE}
   # reformat data type of key variables
@@ -64,9 +67,9 @@ Looking at the summary of data below, we identify the variables of intererst for
   raw$DMG = as.numeric(raw$DMG)
 ```
 
-A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret(even after reading the data help files). Luckily, they are few enough that they can likely be ignored without making a big difference on the exploratory analysis. 
+A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, they can likely be ignored without making a big difference on the exploratory analysis. 
 
-By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
+By plotting the number of *unique* types of weather events per year below, it is apparent see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. I deem it more probable than not that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
 ```{r chunkExpl6, cache=TRUE}
   t = table(format(raw$BGN_DATE,"%Y"))
@@ -78,15 +81,18 @@ By plotting the number of *unique* types of weather events per year below, we ca
   legend("topleft", c("Total","Unique"), lwd=c(2.5,2.5), col=c("blue","red"))
 ```
 
-The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (`r max(u)` records). Accordingly, I will work only with the subset of data from this date forward, as it is more likely more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
+The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (up to `r max(u)` records). Accordingly, I will work only with the subset of data from this date forward, as it is more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
 
 ```{r chunkSubset, cache=TRUE, autodep = TRUE}
   df = raw[raw$BGN_DATE >= "1995-01-01 00:00:00",]
 ```
-This subset nonetheless captures `r round(nrow(df)/nrow(raw)*100,1)`% of the raw data.
+This subset nonetheless captures `r round(nrow(df)/nrow(raw)*100,1)`% of the observations in the raw data.
 
 ### Results
-To facilitate the analysis, I have written a re-usable function that generate a summary of the absolute and relative impact of a particular parameter, by event type:
+
+To answer the research questions, I will analyse which weather events cause the greatest number of fatalities, injuries, and economic damage.
+
+To facilitate this, I have written a re-usable function that generate a summary of the absolute and relative impact of a particular parameter, by event type:
 
 ```{r chunkFunc, cache=TRUE}
   # a function that makes a summary table of a given parameter and calculates
@@ -103,7 +109,7 @@ To facilitate the analysis, I have written a re-usable function that generate a 
   }
 ```
 
-We use this function to explore the most harmful weather events, both on the basis of total fatalities and total injuries:
+I use this function to explore the most harmful weather events, both on the basis of total fatalities and total injuries:
 
 ```{r chunkExpl2, cache=TRUE, autodep = TRUE}
   df1 = mktab("FATALITIES"); head(df1)
@@ -113,25 +119,27 @@ We use this function to explore the most harmful weather events, both on the bas
   df2 = mktab("INJURIES"); head(df2)
 ```
 
-> Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
-
-Across the United States, which types of events have the greatest economic consequences?
-
-Property damage estimates have been computed in the data processing stage using the `PROPDMG` and `PROPDMGEXP` variables. On this basis
+With respect to the second research question, I will use the `DMG` parameter. These property damage estimates were computed in the data processing stage using the `PROPDMG` and `PROPDMGEXP` variables. Using the same analysis as before, we obtain a table of the most costly events:
 
 ```{r chunkExpl7, cache=TRUE, autodep = TRUE}
   df3 = mktab("DMG"); head(df3)
-  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2011")
+  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2011", ylab = "Estimated Cost (USD)")
   axis(1, at = 1:6, labels = head(df3$EVTYPE))
 ```
 
-On an absolute basis, floods have been the most costly weather event to Americans (USD `r round(max(df3$DMG)/1e9, 1)` billion). However, by looking at the relative impact below, we see that the US bears the heaviest costs per event for `HEAVY RAIN/SEVERE WEATHER` (USD `r round(max(df3$RELIMPACT)/1e9, 1)` billion).
+The above chart shows that on an absolute basis, floods have been the most costly weather event to Americans (USD `r round(max(df3$DMG)/1e9, 1)` billion). This is followed by hurricanes/typhoons and storm surges.
+
+However, by looking at the relative impact, we see that heaviest costs per event comes from `HEAVY RAIN/SEVERE WEATHER` (USD `r round(max(df3$RELIMPACT)/1e9, 1)` billion).
 
 ```{r chunkExpl9, cache=TRUE, autodep = TRUE}
   df3[which.max(df3$RELIMPACT),]
 ```
 
-With only one observation above, this result appears suspect/mistaken. However, a review of the `REMARKS` variable for this entry reveals that this weather event was indeed substantial and costly.
+With only one observation above, this result appears suspect/mistaken. However, a review of the `REMARKS` variable for this entry reveals that this weather event was indeed substantial and costly:
+
+```{r chunkExpl10, cache=TRUE, autodep = TRUE}
+  df[df$EVTYPE %in% "HEAVY RAIN/SEVERE WEATHER" & df$PROPDMG == "2.5", "REMARKS"]
+```
 
 ### Session Info
 

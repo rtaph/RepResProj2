@@ -23,7 +23,7 @@ I begin the analysis by loading libraries and setting a few global parameters:
   setwd("~/Documents/Courses/datasciencecoursera/RepResProj2/")
 ```
 
-We first download and unzip the data (if necessary):
+I then check that the data file exists, download it (if needed), and unzip it:
 
 ```r
   #Download file if it does not exist
@@ -34,7 +34,8 @@ We first download and unzip the data (if necessary):
   }
 ```
 
-We then read the data into R
+The data is then read into R. As it is a large file, data is first read as character strings to improve performance and speed: 
+
 
 ```r
   # Load the data and assign it to a variable
@@ -42,7 +43,7 @@ We then read the data into R
   raw    =  read.csv(file, stringsAsFactors = FALSE) # FALSE to optimize read speed
 ```
 
-We summarize information about the data using the `str` command:
+Information about the data can be summarized using the `str` command:
 
 
 ```r
@@ -90,7 +91,9 @@ str(raw)
 ##  $ REFNUM    : num  1 2 3 4 5 6 7 8 9 10 ...
 ```
 
-Looking at the summary of data below, we identify the variables of intererst for the analysis. This will be `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate). These variables either need to be converted or manipulated into more workable formats:
+Looking at the summary above, variables can be identified that match to the question of interest. In this analysis, I will use `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate).
+
+Many of these variables need to be converted or manipulated into more workable formats:
 
 
 ```r
@@ -111,9 +114,9 @@ Looking at the summary of data below, we identify the variables of intererst for
   raw$DMG = as.numeric(raw$DMG)
 ```
 
-A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret(even after reading the data help files). Luckily, they are few enough that they can likely be ignored without making a big difference on the exploratory analysis. 
+A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, they can likely be ignored without making a big difference on the exploratory analysis. 
 
-By plotting the number of *unique* types of weather events per year below, we can see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. It is likely that including this initial period would bias the analysis away from type of events that only started being tracked recently.
+By plotting the number of *unique* types of weather events per year below, it is apparent see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. I deem it more probable than not that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 
 
 ```r
@@ -128,16 +131,19 @@ By plotting the number of *unique* types of weather events per year below, we ca
 
 ![](RepResProj2_files/figure-html/chunkExpl6-1.png) 
 
-The number of unique weather events jumps sharply in 1995 (387 records). Accordingly, I will work only with the subset of data from this date forward, as it is more likely more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
+The number of unique weather events jumps sharply in 1995 (up to 387 records). Accordingly, I will work only with the subset of data from this date forward, as it is more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
 
 
 ```r
   df = raw[raw$BGN_DATE >= "1995-01-01 00:00:00",]
 ```
-This subset nonetheless captures 75.6% of the raw data.
+This subset nonetheless captures 75.6% of the observations in the raw data.
 
 ### Results
-To facilitate the analysis, I have written a re-usable function that generate a summary of the absolute and relative impact of a particular parameter, by event type:
+
+To answer the research questions, I will analyse which weather events cause the greatest number of fatalities, injuries, and economic damage.
+
+To facilitate this, I have written a re-usable function that generate a summary of the absolute and relative impact of a particular parameter, by event type:
 
 
 ```r
@@ -155,7 +161,7 @@ To facilitate the analysis, I have written a re-usable function that generate a 
   }
 ```
 
-We use this function to explore the most harmful weather events, both on the basis of total fatalities and total injuries:
+I use this function to explore the most harmful weather events, both on the basis of total fatalities and total injuries:
 
 
 ```r
@@ -187,11 +193,7 @@ We use this function to explore the most harmful weather events, both on the bas
 ## 231           HEAT     2030        755 2.68874172
 ```
 
-> Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
-
-Across the United States, which types of events have the greatest economic consequences?
-
-Property damage estimates have been computed in the data processing stage using the `PROPDMG` and `PROPDMGEXP` variables. On this basis
+With respect to the second research question, I will use the `DMG` parameter. These property damage estimates were computed in the data processing stage using the `PROPDMG` and `PROPDMGEXP` variables. Using the same analysis as before, we obtain a table of the most costly events:
 
 
 ```r
@@ -209,13 +211,15 @@ Property damage estimates have been computed in the data processing stage using 
 ```
 
 ```r
-  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2011")
+  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2011", ylab = "Estimated Cost (USD)")
   axis(1, at = 1:6, labels = head(df3$EVTYPE))
 ```
 
 ![](RepResProj2_files/figure-html/chunkExpl7-1.png) 
 
-On an absolute basis, floods have been the most costly weather event to Americans (USD 144 billion). However, by looking at the relative impact below, we see that the US bears the heaviest costs per event for `HEAVY RAIN/SEVERE WEATHER` (USD 2.5 billion).
+The above chart shows that on an absolute basis, floods have been the most costly weather event to Americans (USD 144 billion). This is followed by hurricanes/typhoons and storm surges.
+
+However, by looking at the relative impact, we see that heaviest costs per event comes from `HEAVY RAIN/SEVERE WEATHER` (USD 2.5 billion).
 
 
 ```r
@@ -227,7 +231,16 @@ On an absolute basis, floods have been the most costly weather event to American
 ## 99 HEAVY RAIN/SEVERE WEATHER 2.5e+09          1   2.5e+09
 ```
 
-With only one observation above, this result appears suspect/mistaken. However, a review of the `REMARKS` variable for this entry reveals that this weather event was indeed substantial and costly.
+With only one observation above, this result appears suspect/mistaken. However, a review of the `REMARKS` variable for this entry reveals that this weather event was indeed substantial and costly:
+
+
+```r
+  df[df$EVTYPE %in% "HEAVY RAIN/SEVERE WEATHER" & df$PROPDMG == "2.5", "REMARKS"]
+```
+
+```
+## [1] "A potent weather system stalled over southeast Louisiana from the evening of May 8 through mid day of May 10 producing two bouts of heavy rain and severe thunderstorms.  The first event occurred the evening of May 8 and early morning of May 9 producing several tornadoes and widespread heavy rain of 8 to 15 inches across the greater New Orleans metro area into southeast St. Tammany Parish.  The second bout of severe weather struck during the evening of May 9 and continued into the morning of May 10, producing rainfall of 10 to 15 inches primarily from St. Tammany Parish into south Mississippi.  Drainage capacity was overwhelmed by the torrential rainfall on each of these nights and water flooded tens of thousands of homes in southeast Louisiana.  By early June, the Federal Emergency Management Agency (FEMA) reported approximately 60,000 addresses representing single family units,  multifamily units, and businesses had filed for assistance due to weather damage.  In late May, the Red Cross estimated 36,000 homes in southeast Louisiana were affected by flood water.  Newspaper accounts indicated weather related damage to reach the $2.5 to $3.0 billion range.  Parish by parish detail follows. "
+```
 
 ### Session Info
 
