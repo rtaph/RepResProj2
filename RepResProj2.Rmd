@@ -54,7 +54,7 @@ str(raw)
 
 Looking at the summary above, variables can be identified that match to the question of interest. In this analysis, I will use `EVTYPE` (the event type), `FATALITIES`, `INJURIES`, `PROPDMG` (monetary estimate of property damage), and `PROPDMGEXP` (unit used for the damage estimate).
 
-Many of these variables need to be converted or manipulated into more workable formats:
+Many of these variables need to be converted or manipulated into more workable formats. I perform a few data transformations below:
 
 ```{r chunkReformat, cache=TRUE}
   # reformat data type of key variables
@@ -67,7 +67,7 @@ Many of these variables need to be converted or manipulated into more workable f
   raw$DMG = as.numeric(raw$DMG)
 ```
 
-A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, they can likely be ignored without making a big difference on the exploratory analysis. 
+A new variable `DMG` is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, I find it justifiable to leave them out of the exploratory analysis without threatening the validity of the conclusions in a major way. 
 
 By plotting the number of *unique* types of weather events per year below, it is apparent see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. I deem it more probable than not that including this initial period would bias the analysis away from type of events that only started being tracked recently.
 

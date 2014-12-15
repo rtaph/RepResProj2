@@ -126,7 +126,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 ##  $ REMARKS   : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
 ##  $ REFNUM    : num  1 2 3 4 5 6 7 8 9 10 ...</code></pre>
 <p>Looking at the summary above, variables can be identified that match to the question of interest. In this analysis, I will use <code>EVTYPE</code> (the event type), <code>FATALITIES</code>, <code>INJURIES</code>, <code>PROPDMG</code> (monetary estimate of property damage), and <code>PROPDMGEXP</code> (unit used for the damage estimate).</p>
-<p>Many of these variables need to be converted or manipulated into more workable formats:</p>
+<p>Many of these variables need to be converted or manipulated into more workable formats. I perform a few data transformations below:</p>
 <pre class="r"><code>  # reformat data type of key variables
   raw$EVTYPE = as.factor(raw$EVTYPE)
   raw$BGN_DATE = as.POSIXlt(strptime(raw$BGN_DATE,format=&quot;%m/%d/%Y %H:%M:%S&quot;))
@@ -136,7 +136,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
   raw$DMG = as.numeric(raw$DMG) * raw$PROPDMG</code></pre>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>  raw$DMG = as.numeric(raw$DMG)</code></pre>
-<p>A new variable <code>DMG</code> is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, they can likely be ignored without making a big difference on the exploratory analysis.</p>
+<p>A new variable <code>DMG</code> is created to capture the monetary estimate of damages from weather events in a universal unit of measure. Although there are certain uncaught response types that cause NAs to be coerced, these cases are ambigous to interpret (even after reading the data help files). As they are few enough, I find it justifiable to leave them out of the exploratory analysis without threatening the validity of the conclusions in a major way.</p>
 <p>By plotting the number of <em>unique</em> types of weather events per year below, it is apparent see that the initial period of data (~1950 to 1995) has few categorizations. I find it more likely that this absence of data is a result of lack of collection systems/standards, rather than an absence of particular types of events. I deem it more probable than not that including this initial period would bias the analysis away from type of events that only started being tracked recently.</p>
 <pre class="r"><code>  t = table(format(raw$BGN_DATE,&quot;%Y&quot;))
   u  = as.numeric(tapply(raw$EVTYPE,raw$BGN_DATE[[6]], function(x) length(unique(x))))
