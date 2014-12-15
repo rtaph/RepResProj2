@@ -10,12 +10,12 @@ output:
 
 The purpose of the analysis is to determine which types of events are most harmful with respect to population health in the United States by using the [NOAA Storm Database](http://www.ncdc.noaa.gov/stormevents/). The paper attempts to answer two basic questions about severe weather events:
 
-1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+1. Across the United States, which types of events are most harmful with respect to population health?
 2. Across the United States, which types of events have the greatest economic consequences?
 
 ### Synopsis
 
-The analysis finds that...
+The analysis finds that tornadoes are the most harmful weather event to human health in the United States. This is both true in terms of total fatalities as well as injuries recorded. On the other hand, the most economically damaging weather events stem from floods, which 
 
 
 ### Data Processing
@@ -80,49 +80,58 @@ By plotting the number of *unique* types of weather events per year below, we ca
 
 The number of unique weather events jumps sharply in `r names(t[which.max(u)])` (`r max(u)` records). Accordingly, I will work only with the subset of data from this date forward, as it is more likely more representative, and will not bias the data towards type of weather events that were tracked earlier on in history.
 
-```{r chunkSubset, cache=TRUE}
-  df = raw[raw$BGN_DATE >= 1995,]
+```{r chunkSubset, cache=TRUE, autodep = TRUE}
+  df = raw[raw$BGN_DATE >= "1995-01-01 00:00:00",]
 ```
-This captures `r round(nrow(df)/nrow(raw)*100,1)`% of the raw data.
+This subset nonetheless captures `r round(nrow(df)/nrow(raw)*100,1)`% of the raw data.
 
 ### Results
-On the basis of fatalities, it appears that XXX is the most harmful to population health. 
+To facilitate the analysis, I have written a re-usable function that generate a summary of the absolute and relative impact of a particular parameter, by event type:
 
-On the basis of damage
-
-
-Discuss results
-
-
-
-```{r chunkExpl2, cache=TRUE}
-  df1 = aggregate(FATALITIES ~ EVTYPE, data = df, sum)
-  df1 = df1[order(df1$FATALITIES, decreasing = T),]
-  head(df1)
+```{r chunkFunc, cache=TRUE}
+  # a function that makes a summary table of a given parameter and calculates
+  # relative impact (per weather event)
+  mktab = function(variable){
+    v = df[[variable]]
+    dfa = aggregate(v ~ EVTYPE, data = df, sum)
+    dfb = aggregate(v ~ EVTYPE, data = df, length)
+    names(dfb)[2] = "OCCURENCES"; names(dfa)[2] = variable
+    out = merge(dfa, dfb)
+    out$RELIMPACT = out[[variable]] / out$OCCURENCES
+    out = out[order(out[[variable]], decreasing = T),]
+    out
+  }
 ```
 
-```{r chunkExpl3, cache=TRUE}
-  df2 = aggregate(INJURIES ~ EVTYPE, data = df, sum)
-  df2 = df2[order(df2$INJURIES, decreasing = T),]
-  head(df2)
+We use this function to explore the most harmful weather events, both on the basis of total fatalities and total injuries:
+
+```{r chunkExpl2, cache=TRUE, autodep = TRUE}
+  df1 = mktab("FATALITIES"); head(df1)
 ```
 
-```{r chunkExpl4, cache=TRUE}
-  barplot(head(df2$INJURIES))
+```{r chunkExpl3, cache=TRUE, autodep = TRUE}
+  df2 = mktab("INJURIES"); head(df2)
 ```
 
 > Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 
 Across the United States, which types of events have the greatest economic consequences?
 
-Property damage estimates 
+Property damage estimates have been computed in the data processing stage using the `PROPDMG` and `PROPDMGEXP` variables. On this basis
 
-```{r chunkExpl7, cache=TRUE}
-  df3 = aggregate(DMG ~ EVTYPE, data = df, sum)
-  df3 = df3[order(df3$DMG, decreasing = T),]
-  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2008")
+```{r chunkExpl7, cache=TRUE, autodep = TRUE}
+  df3 = mktab("DMG"); head(df3)
+  barplot(head(df3$DMG), main = "Weather Events Causing the Greatest Economic Damage, 1995-2011")
   axis(1, at = 1:6, labels = head(df3$EVTYPE))
 ```
+
+On an absolute basis, floods have been the most costly weather event to Americans (USD `r round(max(df3$DMG)/1e9, 1)` billion). However, by looking at the relative impact (below), we see that the US bears the heaviest costs per event for `HEAVY RAIN/SEVERE WEATHER` (USD `r round(max(df3$RELIMPACT)/1e9, 1)` billion).
+
+```{r chunkExpl9, cache=TRUE, autodep = TRUE}
+  df3[which.max(df3$RELIMPACT),]
+```
+
+Although this result may appear suspect/mistaken given the fact that there is only one observation, a review of the `REMARKS` variable for that entry reveals that this weather event was indeed substantial and costly.
 
 ### Session Info
 
