@@ -9,7 +9,7 @@ The purpose of the analysis is to determine which types of events are most harmf
 
 ### Synopsis
 
-The analysis finds that tornadoes are the most harmful weather event to human health in the United States. This is both true in terms of total fatalities as well as injuries recorded. On the other hand, the most economically damaging weather events stem from floods, which 
+My analysis reveals that tornadoes and excessive heat are the most harmful weather event to human health in the United States. These conclusions are based on the total fatalities as well as injuries recorded for each type of event. Floods are the most economically damaging weather event, costing the economy approximately USD 144 billion per year.
 
 
 ### Data Processing
@@ -215,7 +215,7 @@ Property damage estimates have been computed in the data processing stage using 
 
 ![](RepResProj2_files/figure-html/chunkExpl7-1.png) 
 
-On an absolute basis, floods have been the most costly weather event to Americans (USD 144 billion). However, by looking at the relative impact (below), we see that the US bears the heaviest costs per event for `HEAVY RAIN/SEVERE WEATHER` (USD 2.5 billion).
+On an absolute basis, floods have been the most costly weather event to Americans (USD 144 billion). However, by looking at the relative impact below, we see that the US bears the heaviest costs per event for `HEAVY RAIN/SEVERE WEATHER` (USD 2.5 billion).
 
 
 ```r
@@ -227,7 +227,7 @@ On an absolute basis, floods have been the most costly weather event to American
 ## 99 HEAVY RAIN/SEVERE WEATHER 2.5e+09          1   2.5e+09
 ```
 
-Although this result may appear suspect/mistaken given the fact that there is only one observation, a review of the `REMARKS` variable for that entry reveals that this weather event was indeed substantial and costly.
+With only one observation above, this result appears suspect/mistaken. However, a review of the `REMARKS` variable for this entry reveals that this weather event was indeed substantial and costly.
 
 ### Session Info
 
